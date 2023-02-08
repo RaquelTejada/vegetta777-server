@@ -2,7 +2,6 @@ const router = require("express").Router()
 
 const { response } = require("express")
 const Videogame = require('../models/Videogame.model')
-const User = require('./../models/User.model')
 
 const getAllVideogames = (req, res, next) => {
 
@@ -54,10 +53,21 @@ const filteredVideogame = (req, res, next) => {
         .catch(err => next(err))
 }
 
+const getOneVideogame = (req, res, next) => {
+
+    const { videogame_id } = req.params
+
+    Videogame
+        .findById(videogame_id)
+        .then(response => res.json(response))
+        .catch(err => next(err))
+}
+
 module.exports = {
     getAllVideogames,
     editVideogame,
     deleteVideogame,
     saveVideogame,
-    filteredVideogame
+    filteredVideogame,
+    getOneVideogame
 }
