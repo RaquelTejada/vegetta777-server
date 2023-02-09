@@ -2,12 +2,13 @@ const router = require("express").Router()
 
 const { response } = require("express")
 const Videogame = require('../models/Videogame.model')
+const User = require('../models/User.model')
 
 const getAllVideogames = (req, res, next) => {
 
     Videogame
         .find()
-        .then(response => res.json(response))
+        .then(response => res.json(response.sort((a, b) => b.votes.length - a.votes.length)))
         .catch(err => next(err))
 }
 
@@ -47,7 +48,6 @@ const saveVideogame = (req, res, next) => {
 const filteredVideogame = (req, res, next) => {
 
     const { name } = req.query
-    console.log('estoy en el back', req.query)
 
     Videogame
         .find({ 'name': { $regex: `(?i)${name}` } })
@@ -65,16 +65,48 @@ const getOneVideogame = (req, res, next) => {
         .catch(err => next(err))
 }
 
-// const addVideogameVote = (req, res, next) => {
+const getVideogamesSorted = (req, res, next) => {
 
-//     const { user_id } = req.payload._id
-//     const { videogame_id } = req.params
+    const { votes, name } = req.query;
 
-//     Videogame
-//         .findByIdAndUpdate(videogame_id, { $addToSet: { Votes: user_id } })
-//         .then(response => res.json(response))
-//         .catch(err => next(err))
-// }
+    const filter = [];
+
+    if (votes) {
+        filter.push(['votes', votes])
+    }
+
+    if (name) {
+        filter.push(['name', name])
+    }
+
+    Videogame
+        .find()
+        .sort(filter)
+        .then(response => res.json(response))
+        .catch(err => next(err))
+}
+
+const addVideogameVote = (req, res, next) => {
+
+    const user_id = req.payload._id
+    const { videogame_id } = req.params
+
+
+    User.findById(user_id).then(user => {
+        if (user.votes < 5) {
+            console.log({ user })
+            console.log({ videogame_id })
+            console.log({ user_id })
+            Videogame
+                .findByIdAndUpdate(videogame_id, { $addToSet: { votes: user_id } }, { new: true })
+                .then(response => {
+                    console.log('perdona??')
+                    User.findByIdAndUpdate(user_id, { $inc: { votes: 1 } }).then(() => { res.json(response) })
+                })
+        }
+
+    })
+}
 
 module.exports = {
     getAllVideogames,
@@ -83,5 +115,6 @@ module.exports = {
     saveVideogame,
     filteredVideogame,
     getOneVideogame,
-    // addVideogameVote
+    getVideogamesSorted,
+    addVideogameVote
 }

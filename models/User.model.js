@@ -21,6 +21,13 @@ const userSchema = new Schema(
       type: String,
       enum: ['USER', 'ADMIN'],
       default: 'USER'
+    },
+
+    votes: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5
     }
   },
 
