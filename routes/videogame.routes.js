@@ -1,7 +1,7 @@
 const router = require('express').Router()
 
 const {
-    getAllVideogames, editVideogame, deleteVideogame, saveVideogame, filteredVideogame, getOneVideogame
+    getAllVideogames, editVideogame, deleteVideogame, saveVideogame, filteredVideogame, getOneVideogame, addVideogameVote, getVideogameVote
 }
     = require('../controllers/videogame.controller')
 
@@ -19,6 +19,10 @@ router.post('/saveVideogame', isAuthenticated, saveVideogame)
 router.get('/filteredVideogame', filteredVideogame)
 
 router.get('/getOneVideogame/:videogame_id', isAuthenticated, getOneVideogame)
+
+// router.put('/addVideogameVote', isAuthenticated, addVideogameVote)
+
+// router.get('/getVideogameVote', isAuthenticated, getVideogameVote)
 
 
 module.exports = router

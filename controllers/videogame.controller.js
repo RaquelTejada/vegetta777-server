@@ -7,7 +7,6 @@ const getAllVideogames = (req, res, next) => {
 
     Videogame
         .find()
-        // .select()
         .then(response => res.json(response))
         .catch(err => next(err))
 }
@@ -47,9 +46,12 @@ const saveVideogame = (req, res, next) => {
 
 const filteredVideogame = (req, res, next) => {
 
+    const { name } = req.query
+    console.log('estoy en el back', req.query)
+
     Videogame
-        .find({ ...req.query })
-        .then(response => res.json(response))
+        .find({ 'name': { $regex: `(?i)${name}` } })
+        .then(response => { res.json(response) })
         .catch(err => next(err))
 }
 
@@ -63,11 +65,23 @@ const getOneVideogame = (req, res, next) => {
         .catch(err => next(err))
 }
 
+// const addVideogameVote = (req, res, next) => {
+
+//     const { user_id } = req.payload._id
+//     const { videogame_id } = req.params
+
+//     Videogame
+//         .findByIdAndUpdate(videogame_id, { $addToSet: { Votes: user_id } })
+//         .then(response => res.json(response))
+//         .catch(err => next(err))
+// }
+
 module.exports = {
     getAllVideogames,
     editVideogame,
     deleteVideogame,
     saveVideogame,
     filteredVideogame,
-    getOneVideogame
+    getOneVideogame,
+    // addVideogameVote
 }
