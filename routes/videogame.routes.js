@@ -1,8 +1,8 @@
 const router = require('express').Router()
 
 const {
-    getAllVideogames, editVideogame, deleteVideogame, saveVideogame, filteredVideogame, getOneVideogame, getVideogamesSorted,
-    addVideogameVote
+    getAllVideogames, editVideogame, deleteVideogame, saveVideogame, getOneVideogame, filteredVideogame, getFindCategory,
+    getVideogamesSorted, addVideogameVote
 }
     = require('../controllers/videogame.controller')
 
@@ -17,9 +17,11 @@ router.delete('/delete/:videogame_id', isAuthenticated, deleteVideogame)
 
 router.post('/saveVideogame', isAuthenticated, saveVideogame)
 
+router.get('/getOneVideogame/:videogame_id', isAuthenticated, getOneVideogame)
+
 router.get('/filteredVideogame', filteredVideogame)
 
-router.get('/getOneVideogame/:videogame_id', isAuthenticated, getOneVideogame)
+router.get('/getFindCategory/:category', getFindCategory)
 
 router.get('/getVideogamesSorted', getVideogamesSorted)
 

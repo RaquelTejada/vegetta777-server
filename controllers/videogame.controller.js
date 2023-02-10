@@ -1,5 +1,4 @@
 const router = require("express").Router()
-
 const { response } = require("express")
 const Videogame = require('../models/Videogame.model')
 const User = require('../models/User.model')
@@ -45,16 +44,6 @@ const saveVideogame = (req, res, next) => {
         .catch(err => next(err))
 }
 
-const filteredVideogame = (req, res, next) => {
-
-    const { name } = req.query
-
-    Videogame
-        .find({ 'name': { $regex: `(?i)${name}` } })
-        .then(response => { res.json(response) })
-        .catch(err => next(err))
-}
-
 const getOneVideogame = (req, res, next) => {
 
     const { videogame_id } = req.params
@@ -65,9 +54,29 @@ const getOneVideogame = (req, res, next) => {
         .catch(err => next(err))
 }
 
+const filteredVideogame = (req, res, next) => {
+
+    const { name } = req.query
+
+    Videogame
+        .find({ 'name': { $regex: `(?i)${name}` } })
+        .then(response => { res.json(response) })
+        .catch(err => next(err))
+}
+
+const getFindCategory = (req, res, next) => {
+
+    const { category } = req.params
+
+    Videogame
+        .find({ category })
+        .then(response => res.json(response))
+        .catch(err => next(err))
+}
+
 const getVideogamesSorted = (req, res, next) => {
 
-    const { votes, name } = req.query;
+    const { votes, name, category } = req.query;
 
     const filter = [];
 
@@ -110,8 +119,9 @@ module.exports = {
     editVideogame,
     deleteVideogame,
     saveVideogame,
-    filteredVideogame,
     getOneVideogame,
+    filteredVideogame,
+    getFindCategory,
     getVideogamesSorted,
     addVideogameVote
 }
