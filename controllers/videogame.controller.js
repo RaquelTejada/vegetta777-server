@@ -93,14 +93,11 @@ const addVideogameVote = (req, res, next) => {
 
 
     User.findById(user_id).then(user => {
+
         if (user.votes < 5) {
-            console.log({ user })
-            console.log({ videogame_id })
-            console.log({ user_id })
             Videogame
                 .findByIdAndUpdate(videogame_id, { $addToSet: { votes: user_id } }, { new: true })
                 .then(response => {
-                    console.log('perdona??')
                     User.findByIdAndUpdate(user_id, { $inc: { votes: 1 } }).then(() => { res.json(response) })
                 })
         }
