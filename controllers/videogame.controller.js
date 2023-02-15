@@ -76,7 +76,7 @@ const getFindCategory = (req, res, next) => {
 
 const getVideogamesSorted = (req, res, next) => {
 
-    const { votes, name, category } = req.query;
+    const { votes, name } = req.query;
 
     const filter = [];
 
@@ -101,17 +101,26 @@ const addVideogameVote = (req, res, next) => {
     const { videogame_id } = req.params
 
 
-    User.findById(user_id).then(user => {
+    User
+        .findById(user_id)
+        .then(user => {
 
-        if (user.votes < 5) {
-            Videogame
-                .findByIdAndUpdate(videogame_id, { $addToSet: { votes: user_id } }, { new: true })
-                .then(response => {
-                    User.findByIdAndUpdate(user_id, { $inc: { votes: 1 } }).then(() => { res.json(response) })
-                })
-        }
+            if (user.votes < 5) {
 
-    })
+                Videogame
+                    .findByIdAndUpdate(videogame_id, { $addToSet: { votes: user_id } }, { new: true })
+                    .then(response => {
+
+                        User
+                            .findByIdAndUpdate(user_id, { $inc: { votes: 1 } })
+                            .then(() => { res.json(response) })
+                            .catch(err => next(err))
+                    })
+                    .catch(err => next(err))
+            }
+
+        })
+        .catch(err => next(err))
 }
 
 module.exports = {

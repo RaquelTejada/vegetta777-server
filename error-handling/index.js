@@ -6,7 +6,7 @@ module.exports = (app) => {
   app.use((err, req, res, next) => {
 
     if (err.code && err.code === 11000) {
-      res.status(409).json({ errorMessages: ['El registro ya se encuentra presente en la base de datos'] })
+      res.status(409).json({ errorMessages: ['This email already exists'] })
     }
 
     if (err.name === 'ValidationError') {
@@ -14,10 +14,10 @@ module.exports = (app) => {
       res.status(400).json({ errorMessages })
     }
 
-    console.error("ERROR", req.method, req.path, err);
+    console.error("Error", req.method, req.path, err);
 
     if (!res.headersSent) {
-      res.status(500).json({ errorMessages: ['Error de servidor'] })
+      res.status(500).json({ errorMessages: ['Server error'] })
     }
   })
 }
